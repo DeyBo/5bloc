@@ -3,7 +3,7 @@ import './App.css';
 import Dashboard from './components/dashboard/Dashboard';
 import Token from "./components/token/Token";
 import {Route, BrowserRouter as Router, Switch, Link} from "react-router-dom";
-import {useParams} from "react-router";
+import {useLocation, useParams} from "react-router";
 
 class App extends Component {
     render() {
@@ -28,6 +28,9 @@ class App extends Component {
                         <Route path="/token/:id">
                             <TokenRoute/>
                         </Route>
+                        {/*<Route path="/token/:id/edit">*/}
+                        {/*    <TokenRoute/>*/}
+                        {/*</Route>*/}
                     </Switch>
                 </div>
             </Router>
@@ -35,9 +38,10 @@ class App extends Component {
     }
 }
 
-function TokenRoute() {
+function TokenRoute(props) {
     const id = useParams().id;
-    return <Token id={id}/>
+    const edit = useLocation().pathname.endsWith('edit');
+    return <Token id={id} edit={edit}/>
 }
 
 export default App;

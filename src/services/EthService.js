@@ -40,4 +40,11 @@ export class EthService {
             }
         }
     }
+
+    async getTokenOwner(tokenId) {
+        if (this.contract) {
+            return await this.contract.methods.tokenOwner(tokenId).call();
+        }
+        return false;
+    }
 }
