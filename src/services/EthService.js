@@ -31,11 +31,10 @@ export class EthService {
                 return await this.contract.methods.getToken(tokenId).call();
             } else {
                 const tokens = [];
-                for (let i = 0; i <= 15; i++) {
+                const tokensCount = await this.contract.methods.totalTokens().call();
+                for (let i = 0; i < tokensCount; i++) {
                     const token = await this.contract.methods.getToken(i).call();
-                    if (token._onSale) {
-                        tokens.push(token);
-                    }
+                    tokens.push(token);
                 }
                 return tokens;
             }

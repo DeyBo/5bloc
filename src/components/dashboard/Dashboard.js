@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {EthService} from "../../services/EthService";
+import {Link} from "react-router-dom";
 
 class Dashboard extends Component {
     constructor(props) {
@@ -18,6 +19,10 @@ class Dashboard extends Component {
         });
     }
 
+    getTokenId(token) {
+        return this.state.tokens.indexOf(token);
+    }
+
     render() {
         const table = <table>
             <thead>
@@ -28,21 +33,25 @@ class Dashboard extends Component {
                 <th>Espace à vivre</th>
                 <th>Type</th>
                 <th>On sale</th>
+                <th/>
             </tr>
             </thead>
             <tbody>
             {this.state.tokens && this.state.tokens.length > 0 &&
             this.state.tokens.map((token, key) => {
-                return (
-                    <tr key={key}>
-                        <td>{token._name}</td>
-                        <td>{token._location}</td>
-                        <td>{token._price}</td>
-                        <td>{token._livingSpace}</td>
-                        <td>{token._tokenType}</td>
-                        <td>{token._onSale ? 'Yes' : 'No'}</td>
-                    </tr>
-                )
+                if (token._onSale) {
+                    return (
+                        <tr key={key}>
+                            <td>{token._name}</td>
+                            <td>{token._location}</td>
+                            <td>{token._price}</td>
+                            <td>{token._livingSpace}</td>
+                            <td>{token._tokenType}</td>
+                            <td>{token._onSale ? 'Yes' : 'No'}</td>
+                            <td><Link to={'/token/' + this.getTokenId(token)}>Go to token</Link></td>
+                        </tr>
+                    )
+                }
             })
             }
             </tbody>
@@ -52,8 +61,7 @@ class Dashboard extends Component {
 
         return (
             <div className="dashboard">
-                <h1>Hello World !</h1>
-                <p>Your account : {this.state.account}</p>
+                <h1>Tokens on sale :</h1>
                 {toDisplay}
                 {/*<button onClick={this.createToken}>Add token</button>*/}
             </div>
