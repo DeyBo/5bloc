@@ -25,6 +25,16 @@ export class EthService {
         })
     }
 
+    isContractOwner() {
+        return new Promise((resolve, reject) => {
+            if (this.contract) {
+                this.contract.methods.contractOwner().call().then(contractOwner => {
+                    resolve(contractOwner === this.account);
+                }).catch(e => reject(e));
+            } else resolve(false);
+        });
+    }
+
     async getTokens(tokenId = null) {
         if (this.contract) {
             if (tokenId !== null) {
@@ -34,6 +44,8 @@ export class EthService {
                 const tokensCount = await this.contract.methods.totalTokens().call();
                 for (let i = 0; i < tokensCount; i++) {
                     const token = await this.contract.methods.getToken(i).call();
+                    const tokenOwner = await this.getTokenOwner(i);
+                    if (tokenOwner) token.owner = tokenOwner;
                     tokens.push(token);
                 }
                 return tokens;
@@ -47,4 +59,6 @@ export class EthService {
         }
         return false;
     }
+
+    isTokenOwner() {}
 }
