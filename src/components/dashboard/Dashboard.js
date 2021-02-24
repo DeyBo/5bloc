@@ -7,14 +7,14 @@ class Dashboard extends Component {
         super(props);
         this.ethService = new EthService();
 
-        this.state = {tokens: [], account: ''};
+        this.state = {loading: true, tokens: [], account: ''};
     }
 
     componentDidMount() {
         this.ethService.enableEthConnection().then(() => {
             this.setState({account: this.ethService.account});
             this.ethService.getTokens().then(tokens => {
-                this.setState({tokens});
+                this.setState({tokens, loading: false});
             });
         });
     }
@@ -27,10 +27,10 @@ class Dashboard extends Component {
         const table = <table>
             <thead>
             <tr>
-                <th>Nom</th>
-                <th>Ville</th>
-                <th>Prix</th>
-                <th>Espace à vivre</th>
+                <th>Name</th>
+                <th>Location</th>
+                <th>Price</th>
+                <th>Living Space</th>
                 <th>Type</th>
                 <th>On sale</th>
                 <th/>
@@ -57,13 +57,15 @@ class Dashboard extends Component {
             </tbody>
         </table>;
 
-        const toDisplay = this.state.tokens.length > 0 ? table : <span>loading...</span>
+        const loading = <span>loading...</span>;
+        const noTokens = <span>no tokens available</span>
+        const toDisplay = this.state.loading ?
+            loading : this.state.tokens.length > 0 ? table : noTokens;
 
         return (
             <div className="dashboard">
                 <h1>Tokens on sale :</h1>
                 {toDisplay}
-                {/*<button onClick={this.createToken}>Add token</button>*/}
             </div>
         )
     }
