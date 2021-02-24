@@ -60,5 +60,7 @@ export class EthService {
         return false;
     }
 
-    isTokenOwner() {}
+    convertEtherInWei(ether) {
+        return Web3.utils.toWei(ether, 'ether');
+    }
 }

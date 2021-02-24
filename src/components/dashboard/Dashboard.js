@@ -7,14 +7,21 @@ class Dashboard extends Component {
         super(props);
         this.ethService = new EthService();
 
-        this.state = {loading: true, tokens: [], account: ''};
+        this.state = {loading: true, tokens: [], tokensToDisplay: [], account: ''};
     }
 
     componentDidMount() {
         this.ethService.enableEthConnection().then(() => {
             this.setState({account: this.ethService.account});
             this.ethService.getTokens().then(tokens => {
-                this.setState({tokens, loading: false});
+                this.setState({
+                    tokens,
+                    tokensToDisplay: tokens.filter(token =>
+                        token.owner !== this.ethService.account &&
+                        token._onSale
+                    ),
+                    loading: false
+                });
             });
         });
     }
@@ -37,21 +44,19 @@ class Dashboard extends Component {
             </tr>
             </thead>
             <tbody>
-            {this.state.tokens && this.state.tokens.length > 0 &&
-            this.state.tokens.map((token, key) => {
-                if (token._onSale) {
-                    return (
-                        <tr key={key}>
-                            <td>{token._name}</td>
-                            <td>{token._location}</td>
-                            <td>{token._price}</td>
-                            <td>{token._livingSpace}</td>
-                            <td>{token._tokenType}</td>
-                            <td>{token._onSale ? 'Yes' : 'No'}</td>
-                            <td><Link to={'/token/' + this.getTokenId(token)}>Go to token</Link></td>
-                        </tr>
-                    )
-                }
+            {this.state.tokensToDisplay && this.state.tokensToDisplay.length > 0 &&
+            this.state.tokensToDisplay.map((token, key) => {
+                return (
+                    <tr key={key}>
+                        <td>{token._name}</td>
+                        <td>{token._location}</td>
+                        <td>{token._price}</td>
+                        <td>{token._livingSpace}</td>
+                        <td>{token._tokenType}</td>
+                        <td>{token._onSale ? 'Yes' : 'No'}</td>
+                        <td><Link to={'/token/' + this.getTokenId(token)}>Go to token</Link></td>
+                    </tr>
+                )
             })
             }
             </tbody>
@@ -60,7 +65,7 @@ class Dashboard extends Component {
         const loading = <span>loading...</span>;
         const noTokens = <span>no tokens available</span>
         const toDisplay = this.state.loading ?
-            loading : this.state.tokens.length > 0 ? table : noTokens;
+            loading : this.state.tokensToDisplay.length > 0 ? table : noTokens;
 
         return (
             <div className="dashboard">
