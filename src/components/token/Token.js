@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {EthService} from "../../services/EthService";
 import {Redirect} from "react-router";
+import {Button, Spinner} from "react-bootstrap";
 
 class Token extends Component {
     constructor(props) {
@@ -40,20 +41,27 @@ class Token extends Component {
             return <Redirect to='/'/>
         }
 
-        const token = !this.state.loading ? <div className="token">
-            <div><span>Name : {this.state.token._name}</span></div>
-            <div><span>Location : {this.state.token._location}</span></div>
-            <div><span>Price : {this.state.token._price}</span></div>
-            <div><span>Living space : {this.state.token._livingSpace}</span></div>
-            <div><span>Token type : {this.state.token._tokenType}</span></div>
-        </div> : 'loading...';
-
         return (
-            <div>
-                <h1>id : {this.props.id}</h1>
-                {token}
-                <button disabled={this.state.loading} onClick={this.buyToken}>Buy</button>
-            </div>
+            this.state.token ? <div>
+                <h1 className="page-title">{this.state.token ? this.state.token._name : null}</h1>
+                <div className="w-100 text-right">
+                    <Button className="btn-dark" disabled={this.state.loading}
+                            onClick={this.buyToken}>Buy token</Button>
+                </div>
+                <div className="m-3">
+                    <div className="m-2"><b>Location</b> : {this.state.token._location}</div>
+                    <div className="m-2"><b>Price</b> : {this.state.token._price} eth</div>
+                    <div className="m-2"><b>Living space</b> : {this.state.token._livingSpace} m²</div>
+                    <div className="m-2"><b>Type</b> : {this.state.token._tokenType}</div>
+                </div>
+                <hr/>
+                <h3 className="m-3">Images</h3>
+                <div className="m-3">
+                    <img width="50%"
+                        src="https://manager.groupe-bdl.com/web_content/modeles/114-modele-maison-individuelle-a-etage-1.jpg"
+                        alt=""/>
+                </div>
+            </div> : <Spinner animation="grow" variant="black"/>
         )
     }
 }

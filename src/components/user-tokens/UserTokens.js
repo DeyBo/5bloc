@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {EthService} from "../../services/EthService";
 import {Link} from "react-router-dom";
+import {Button, Spinner, Table} from "react-bootstrap";
 
 class UserTokens extends Component {
     constructor(props) {
@@ -46,21 +47,20 @@ class UserTokens extends Component {
 
     removeTokenFromSale(token) {
         this.ethService.contract.methods.removeFromSale(this.getTokenId(token))
-            .send({from: this.ethService.account}).once('receipt', (receipt) => {
+            .send({from: this.ethService.account}).once('receipt', () => {
                 this.getUserTokens();
             });
     }
 
     render() {
-        const table = <table>
+        const table = <Table>
             <thead>
             <tr>
                 <th>Name</th>
                 <th>Location</th>
-                <th>Price</th>
-                <th>Living Space</th>
+                <th>Price (eth)</th>
+                <th>Living space (m²)</th>
                 <th>Type</th>
-                <th>On sale</th>
                 <th/>
             </tr>
             </thead>
@@ -74,28 +74,27 @@ class UserTokens extends Component {
                         <td>{token._price}</td>
                         <td>{token._livingSpace}</td>
                         <td>{token._tokenType}</td>
-                        <td>{token._onSale ? 'Yes' : 'No'}</td>
                         <td>
-                            <button onClick={() => this.updateTokenSaleState(token)}>
-                                {token._onSale ? 'Remove from sale' : 'Put on sale'}</button>
+                            <Button className="btn-dark" onClick={() => this.updateTokenSaleState(token)}>
+                                {token._onSale ? 'Remove from sale' : 'Put on sale'}</Button>
                         </td>
                     </tr>
                 )
             })
             }
             </tbody>
-        </table>
+        </Table>
 
-        const loading = <span>loading...</span>;
-        const noTokens = <span>you don't have tokens</span>;
+        const loading = <div className="w-100 text-center"><Spinner animation="grow"/></div>;
+        const noTokens = <div className="m-3">You don't have tokens</div>;
         const toDisplay = this.state.loading ?
             loading : this.state.tokensToDisplay.length > 0 ? table : noTokens;
 
         return (
             <div className="user-tokens">
-                <h1>Your tokens :</h1>
-                <div>
-                    <Link to="/token/create"><button>Create token</button></Link>
+                <h1 className="page-title">Your tokens :</h1>
+                <div className="w-100 text-right m-3">
+                    <Link to="/token/create"><Button className="btn-dark">Create token</Button></Link>
                 </div>
                 {toDisplay}
             </div>

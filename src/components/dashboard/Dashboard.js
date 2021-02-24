@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
+import './Dashboard.css';
 import {EthService} from "../../services/EthService";
 import {Link} from "react-router-dom";
+import {Button, Card, ListGroup, Spinner} from "react-bootstrap";
 
 class Dashboard extends Component {
     constructor(props) {
@@ -31,45 +33,39 @@ class Dashboard extends Component {
     }
 
     render() {
-        const table = <table>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Location</th>
-                <th>Price</th>
-                <th>Living Space</th>
-                <th>Type</th>
-                <th>On sale</th>
-                <th/>
-            </tr>
-            </thead>
-            <tbody>
-            {this.state.tokensToDisplay && this.state.tokensToDisplay.length > 0 &&
-            this.state.tokensToDisplay.map((token, key) => {
-                return (
-                    <tr key={key}>
-                        <td>{token._name}</td>
-                        <td>{token._location}</td>
-                        <td>{token._price}</td>
-                        <td>{token._livingSpace}</td>
-                        <td>{token._tokenType}</td>
-                        <td>{token._onSale ? 'Yes' : 'No'}</td>
-                        <td><Link to={'/token/' + this.getTokenId(token)}>Go to token</Link></td>
-                    </tr>
-                )
-            })
+        const cards = <div id="cards">
+            {
+                this.state.tokensToDisplay && this.state.tokensToDisplay.length > 0 &&
+                this.state.tokensToDisplay.map(token => {
+                    return (
+                        <Card>
+                            <Card.Img variant="top" src="https://manager.groupe-bdl.com/web_content/modeles/114-modele-maison-individuelle-a-etage-1.jpg"/>
+                            <Card.Body>
+                                <Card.Title>{token._name}</Card.Title>
+                                <Card.Subtitle className="mb-2 text-muted">In {token._location}</Card.Subtitle>
+                                <ListGroup>
+                                    <ListGroup.Item><b>Price</b> : {token._price} eth</ListGroup.Item>
+                                    <ListGroup.Item><b>Living space</b> : {token._livingSpace} m²</ListGroup.Item>
+                                    <ListGroup.Item><b>Type</b> : {token._tokenType}</ListGroup.Item>
+                                </ListGroup>
+                                <Card.Link href={'/token/' + this.getTokenId(token)}>
+                                    <Button className="mt-2" variant="dark">Go to token</Button>
+                                </Card.Link>
+                            </Card.Body>
+                        </Card>
+                    )
+                })
             }
-            </tbody>
-        </table>;
+        </div>;
 
-        const loading = <span>loading...</span>;
+        const loading = <div className="w-100 text-center"><Spinner animation="grow" variant="dark"/></div>;
         const noTokens = <span>no tokens available</span>
         const toDisplay = this.state.loading ?
-            loading : this.state.tokensToDisplay.length > 0 ? table : noTokens;
+            loading : this.state.tokensToDisplay.length > 0 ? cards : noTokens;
 
         return (
-            <div className="dashboard">
-                <h1>Tokens on sale :</h1>
+            <div id="dashboard">
+                <h1 className="page-title">Tokens on sale</h1>
                 {toDisplay}
             </div>
         )

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {EthService} from "../../services/EthService";
 import {Redirect} from "react-router";
+import {Button, Form} from "react-bootstrap";
 
 class CreateToken extends Component {
     constructor(props) {
@@ -57,35 +58,35 @@ class CreateToken extends Component {
             return <Redirect to='/your-tokens'/>
         }
 
-        const form = <form>
-            <div>
-                <label htmlFor="name">Name</label>
-                <input disabled={this.state.loading} id="name" type="text"/>
-            </div>
-            <div>
-                <label htmlFor="location">Location</label>
-                <input disabled={this.state.loading} id="location" type="text"/>
-            </div>
-            <div>
-                <label htmlFor="price">Price</label>
-                <input disabled={this.state.loading} id="price" type="number"/>
-            </div>
-            <div>
-                <label htmlFor="livingSpace">Living space</label>
-                <input disabled={this.state.loading} id="livingSpace" type="number"/>
-            </div>
-            <div>
-                <label htmlFor="type">Type</label>
-                <input disabled={this.state.loading} id="type" type="text"/>
-            </div>
-        </form>;
+        const form = <Form>
+            <Form.Group>
+                <Form.Label htmlFor="name">Name</Form.Label>
+                <Form.Control disabled={this.state.loading} id="name" type="text"/>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label htmlFor="location">Location</Form.Label>
+                <Form.Control disabled={this.state.loading} id="location" type="text"/>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label htmlFor="price">Price (€)</Form.Label>
+                <Form.Control disabled={this.state.loading} id="price" type="number"/>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label htmlFor="livingSpace">Living space (m²)</Form.Label>
+                <Form.Control disabled={this.state.loading} id="livingSpace" type="number"/>
+            </Form.Group>
+            <Form.Group>
+                <Form.Label htmlFor="type">Type</Form.Label>
+                <Form.Control disabled={this.state.loading} id="type" type="text"/>
+            </Form.Group>
+        </Form>;
 
-        const createTokenButton = <button disabled={this.state.loading}
-                                          onClick={this.createToken}>Create</button>;
+        const createTokenButton = <Button className="btn-dark" disabled={this.state.loading}
+                                          onClick={this.createToken}>Create</Button>;
 
         return (
             <div>
-                <h1>Create token</h1>
+                <h1 className="page-title">Create token</h1>
                 {form}
                 <div>
                     {createTokenButton}{this.state.loading ? <span>Creating...</span> : null}

@@ -7,6 +7,8 @@ import {useLocation, useParams} from "react-router";
 import {EthService} from "./services/EthService";
 import UserTokens from "./components/user-tokens/UserTokens";
 import CreateToken from "./components/create-token/CreateToken";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Nav, Navbar, NavbarBrand} from "react-bootstrap";
 
 class App extends Component {
 
@@ -27,21 +29,28 @@ class App extends Component {
     render() {
         return (
             <Router>
-                <div>
-                    <nav>
-                        <ul>
-                            <li>
-                                <Link to="/">Dashboard</Link>
-                            </li>
-                            <li>
-                                <Link to="/your-tokens">Your tokens</Link>
-                            </li>
-                            {this.state.contractOwner ? <li>
-                                <Link to="/admin">Admin</Link>
-                            </li> : null}
-                        </ul>
-                    </nav>
+                <Navbar bg="dark" variant="dark" expand="lg">
+                    {/* <ul>*/}
+                    {/*    <li>*/}
+                    {/*        <Link to="/">Dashboard</Link>*/}
+                    {/*    </li>*/}
+                    {/*    <li>*/}
+                    {/*        <Link to="/your-tokens">Your tokens</Link>*/}
+                    {/*    </li>*/}
+                    {/*    {this.state.contractOwner ? <li>*/}
+                    {/*        <Link to="/admin">Admin</Link>*/}
+                    {/*    </li> : null}*/}
+                    {/*</ul>*/}
 
+                    <Navbar.Brand href='/'>Dashboard</Navbar.Brand>
+                    <Navbar.Collapse>
+                        <Nav className="mr-auto">
+                            <Nav.Link href="/your-tokens">Your tokens</Nav.Link>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Navbar>
+
+                <div className="container">
                     <Switch>
                         <Route exact path="/">
                             <Dashboard/>
