@@ -3,7 +3,10 @@
     flex-wrap: wrap;
 }
 
-.card {
+.divCard {
     width: 25%;
+}
+
+.card {
     margin: 1rem;
 }

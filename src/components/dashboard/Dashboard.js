@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './Dashboard.css';
 import {EthService} from "../../services/EthService";
-import {Link} from "react-router-dom";
 import {Button, Card, ListGroup, Spinner} from "react-bootstrap";
 
 class Dashboard extends Component {
@@ -10,6 +9,8 @@ class Dashboard extends Component {
         this.ethService = new EthService();
 
         this.state = {loading: true, tokens: [], tokensToDisplay: [], account: ''};
+
+        this.emptyImageUrl = 'https://thumbs.dreamstime.com/b/black-linear-photo-camera-logo-like-no-image-available-black-linear-photo-camera-logo-like-no-image-available-flat-stroke-style-106031126.jpg';
     }
 
     componentDidMount() {
@@ -36,23 +37,25 @@ class Dashboard extends Component {
         const cards = <div id="cards">
             {
                 this.state.tokensToDisplay && this.state.tokensToDisplay.length > 0 &&
-                this.state.tokensToDisplay.map(token => {
+                this.state.tokensToDisplay.map((token, key) => {
                     return (
-                        <Card>
-                            <Card.Img variant="top" src="https://manager.groupe-bdl.com/web_content/modeles/114-modele-maison-individuelle-a-etage-1.jpg"/>
-                            <Card.Body>
-                                <Card.Title>{token._name}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">In {token._location}</Card.Subtitle>
-                                <ListGroup>
-                                    <ListGroup.Item><b>Price</b> : {token._price} eth</ListGroup.Item>
-                                    <ListGroup.Item><b>Living space</b> : {token._livingSpace} m²</ListGroup.Item>
-                                    <ListGroup.Item><b>Type</b> : {token._tokenType}</ListGroup.Item>
-                                </ListGroup>
-                                <Card.Link href={'/token/' + this.getTokenId(token)}>
-                                    <Button className="mt-2" variant="dark">Go to token</Button>
-                                </Card.Link>
-                            </Card.Body>
-                        </Card>
+                        <div key={key} className="divCard">
+                            <Card>
+                                <Card.Img variant="top" src={token._images.length > 0 ? token._images[0] : this.emptyImageUrl}/>
+                                <Card.Body>
+                                    <Card.Title>{token._name}</Card.Title>
+                                    <Card.Subtitle className="mb-2 text-muted">In {token._location}</Card.Subtitle>
+                                    <ListGroup>
+                                        <ListGroup.Item><b>Price</b> : {token._price} eth</ListGroup.Item>
+                                        <ListGroup.Item><b>Living space</b> : {token._livingSpace} m²</ListGroup.Item>
+                                        <ListGroup.Item><b>Type</b> : {token._tokenType}</ListGroup.Item>
+                                    </ListGroup>
+                                    <Card.Link href={'/token/' + this.getTokenId(token)}>
+                                        <Button className="mt-2" variant="dark">Go to token</Button>
+                                    </Card.Link>
+                                </Card.Body>
+                            </Card>
+                        </div>
                     )
                 })
             }

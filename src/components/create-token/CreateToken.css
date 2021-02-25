@@ -1,0 +1,26 @@
+#images h3 {
+    display: flex;
+}
+
+#addImage {
+    margin-left: 1rem;
+}
+
+#images #tokenImages {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#images #tokenImages .tokenImage .image {
+    width: 300px;
+}
+
+#images #tokenImages .tokenImage .deleteImage {
+    position: absolute;
+    background-color: white;
+    cursor: pointer;
+}
+
+#submitButton {
+    margin-top: 2rem;
+}
