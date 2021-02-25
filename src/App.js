@@ -34,7 +34,7 @@ class App extends Component {
         if (this.ethService.contract && this.state.contractOwner) {
             this.ethService.contract.methods.withdrawComissionPart().send({
                 from: this.ethService.account,
-                value: 1
+                value: 0
             });
         }
     }
