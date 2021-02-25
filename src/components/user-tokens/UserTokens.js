@@ -2,13 +2,14 @@ import React, {Component} from 'react';
 import {EthService} from "../../services/EthService";
 import {Link} from "react-router-dom";
 import {Button, Spinner, Table} from "react-bootstrap";
+import editImg from '../../edit_black.png';
 
 class UserTokens extends Component {
     constructor(props) {
         super(props);
         this.ethService = new EthService();
 
-        this.state = {loading: true, tokens: [], tokensToDisplay: [], account: '', createToken: false};
+        this.state = {loading: true, tokens: [], tokensToDisplay: [], account: ''};
         this.updateTokenSaleState = this.updateTokenSaleState.bind(this);
     }
 
@@ -52,10 +53,15 @@ class UserTokens extends Component {
             });
     }
 
+    getTokenEditUrl(token) {
+        return '/token/' + this.getTokenId(token) + '/edit';
+    }
+
     render() {
         const table = <Table>
             <thead>
             <tr>
+                <th/>
                 <th>Name</th>
                 <th>Location</th>
                 <th>Price (eth)</th>
@@ -69,14 +75,17 @@ class UserTokens extends Component {
             this.state.tokensToDisplay.map((token, key) => {
                 return (
                     <tr key={key}>
+                        <td><Link to={this.getTokenEditUrl(token)}><img src={editImg} alt="Edit token"/></Link></td>
                         <td>{token._name}</td>
                         <td>{token._location}</td>
                         <td>{token._price}</td>
                         <td>{token._livingSpace}</td>
                         <td>{token._tokenType}</td>
-                        <td>
-                            <Button className="btn-dark" onClick={() => this.updateTokenSaleState(token)}>
-                                {token._onSale ? 'Remove from sale' : 'Put on sale'}</Button>
+                        <td className="p-2">
+                            <Button className="btn-dark" onClick={() => this.updateTokenSaleState(token)}
+                                    disabled={this.state.loading}>
+                                {token._onSale ? 'Remove from sale' : 'Put on sale'}
+                            </Button>
                         </td>
                     </tr>
                 )
@@ -94,7 +103,7 @@ class UserTokens extends Component {
             <div className="user-tokens">
                 <h1 className="page-title">Your tokens :</h1>
                 <div className="w-100 text-right m-3">
-                    <Link to="/token/create"><Button className="btn-dark">Create token</Button></Link>
+                    <Link to="/token/create"><Button className="btn-dark" disabled={this.state.loading}>Create token</Button></Link>
                 </div>
                 {toDisplay}
             </div>

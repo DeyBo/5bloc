@@ -8,12 +8,38 @@ class CreateToken extends Component {
         super(props);
         this.ethService = new EthService();
 
-        this.state = {loading: false, navigate: false};
+        this.state = {loading: true, navigate: false, token: null, saving: false};
         this.createToken = this.createToken.bind(this);
+        this.editToken = this.editToken.bind(this);
+
+        this.inputs = [
+            '_name',
+            '_location',
+            '_price',
+            '_livingSpace',
+            '_tokenType'
+        ];
     }
 
     componentDidMount() {
-        this.ethService.enableEthConnection().then();
+        this.ethService.enableEthConnection().then(() => {
+            if (this.props.edit) {
+                this.getToken();
+            } else {
+                this.setState({loading: false});
+            }
+        });
+    }
+
+    getToken() {
+        this.ethService.getTokens(this.props.id).then(token => {
+            this.setState({token});
+            for (let input of this.inputs) {
+                document.getElementById(input).value = token[input];
+            }
+            document.getElementById('_onSale').checked = token._onSale;
+            this.setState({loading: false, saving: false});
+        });
     }
 
     isValid(input) {
@@ -22,15 +48,8 @@ class CreateToken extends Component {
     }
 
     checkValidity() {
-        const inputs = [
-            'name',
-            'location',
-            'price',
-            'livingSpace',
-            'type'
-        ];
         let valid = true;
-        for (let input of inputs) {
+        for (let input of this.inputs) {
             valid = this.isValid(input);
             if (!valid) return false;
         }
@@ -39,16 +58,34 @@ class CreateToken extends Component {
 
     createToken() {
         if (this.checkValidity()) {
-            this.setState({loading: true});
+            this.setState({loading: true, saving: true});
             this.ethService.contract.methods.createToken(
-                document.getElementById('name').value,
-                document.getElementById('location').value,
-                document.getElementById('price').value,
-                document.getElementById('livingSpace').value,
-                document.getElementById('type').value,
+                document.getElementById('_name').value,
+                document.getElementById('_location').value,
+                document.getElementById('_price').value,
+                document.getElementById('_livingSpace').value,
+                document.getElementById('_tokenType').value,
                 []
             ).send({from: this.ethService.account}).once('receipt', (() => {
-                this.setState({loading: false, navigate: true});
+                this.setState({saving: false, navigate: true});
+            }));
+        }
+    }
+
+    editToken() {
+        if (this.checkValidity() && this.isValid('_onSale')) {
+            this.setState({loading: true, saving: true});
+            this.ethService.contract.methods.editTokenAttributes(
+                this.props.id,
+                document.getElementById('_name').value,
+                document.getElementById('_location').value,
+                document.getElementById('_price').value,
+                document.getElementById('_livingSpace').value,
+                document.getElementById('_tokenType').value,
+                [],
+                document.getElementById('_onSale').checked
+            ).send({from: this.ethService.account}).once('receipt', (() => {
+                this.getToken();
             }));
         }
     }
@@ -61,35 +98,42 @@ class CreateToken extends Component {
         const form = <Form>
             <Form.Group>
                 <Form.Label htmlFor="name">Name</Form.Label>
-                <Form.Control disabled={this.state.loading} id="name" type="text"/>
+                <Form.Control disabled={this.state.loading} id="_name" type="text"/>
             </Form.Group>
             <Form.Group>
                 <Form.Label htmlFor="location">Location</Form.Label>
-                <Form.Control disabled={this.state.loading} id="location" type="text"/>
+                <Form.Control disabled={this.state.loading} id="_location" type="text"/>
             </Form.Group>
             <Form.Group>
                 <Form.Label htmlFor="price">Price (€)</Form.Label>
-                <Form.Control disabled={this.state.loading} id="price" type="number"/>
+                <Form.Control disabled={this.state.loading} id="_price" type="number"/>
             </Form.Group>
             <Form.Group>
                 <Form.Label htmlFor="livingSpace">Living space (m²)</Form.Label>
-                <Form.Control disabled={this.state.loading} id="livingSpace" type="number"/>
+                <Form.Control disabled={this.state.loading} id="_livingSpace" type="number"/>
             </Form.Group>
             <Form.Group>
                 <Form.Label htmlFor="type">Type</Form.Label>
-                <Form.Control disabled={this.state.loading} id="type" type="text"/>
+                <Form.Control disabled={this.state.loading} id="_tokenType" type="text"/>
             </Form.Group>
+            {this.props.edit ?
+                <Form.Group>
+                    <Form.Check label="On sale" disabled={this.state.loading} id="_onSale" type="checkbox"/>
+                </Form.Group>
+            : null}
         </Form>;
 
         const createTokenButton = <Button className="btn-dark" disabled={this.state.loading}
-                                          onClick={this.createToken}>Create</Button>;
+                                          onClick={this.props.edit ? this.editToken : this.createToken}>{this.props.edit ? 'Edit' : 'Create'}</Button>;
+
+        const buttonSpan = <span>{this.props.edit ? 'Editing' : 'Creating'}...</span>;
 
         return (
-            <div>
+            <div id="token-edition">
                 <h1 className="page-title">Create token</h1>
                 {form}
                 <div>
-                    {createTokenButton}{this.state.loading ? <span>Creating...</span> : null}
+                    {createTokenButton}{this.state.saving ? buttonSpan : null}
                 </div>
             </div>
         )

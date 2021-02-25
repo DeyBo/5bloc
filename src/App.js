@@ -30,18 +30,6 @@ class App extends Component {
         return (
             <Router>
                 <Navbar bg="dark" variant="dark" expand="lg">
-                    {/* <ul>*/}
-                    {/*    <li>*/}
-                    {/*        <Link to="/">Dashboard</Link>*/}
-                    {/*    </li>*/}
-                    {/*    <li>*/}
-                    {/*        <Link to="/your-tokens">Your tokens</Link>*/}
-                    {/*    </li>*/}
-                    {/*    {this.state.contractOwner ? <li>*/}
-                    {/*        <Link to="/admin">Admin</Link>*/}
-                    {/*    </li> : null}*/}
-                    {/*</ul>*/}
-
                     <Navbar.Brand href='/'>Dashboard</Navbar.Brand>
                     <Navbar.Collapse>
                         <Nav className="mr-auto">
@@ -61,6 +49,9 @@ class App extends Component {
                         <Route path="/token/create">
                             <CreateToken/>
                         </Route>
+                        <Route path="/token/:id/edit">
+                            <TokenRoute/>
+                        </Route>
                         <Route path="/token/:id">
                             <TokenRoute/>
                         </Route>
@@ -74,6 +65,9 @@ class App extends Component {
 function TokenRoute() {
     const id = useParams().id;
     const edit = useLocation().pathname.endsWith('edit');
+    if (edit) {
+        return <CreateToken id={id} edit={edit}/>
+    }
     return <Token id={id} edit={edit}/>
 }
 
