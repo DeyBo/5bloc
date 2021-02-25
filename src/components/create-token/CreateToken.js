@@ -69,7 +69,7 @@ class CreateToken extends Component {
                 document.getElementById('_price').value,
                 document.getElementById('_livingSpace').value,
                 document.getElementById('_tokenType').value,
-                []
+                this.state.images
             ).send({from: this.ethService.account}).once('receipt', (() => {
                 this.setState({saving: false, navigate: true});
             }));
