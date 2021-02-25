@@ -1,0 +1,12 @@
+#cards {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.divCard {
+    width: 25%;
+}
+
+.card {
+    margin: 1rem;
+}
