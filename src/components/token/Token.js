@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {EthService} from "../../services/EthService";
 import {Redirect} from "react-router";
 import {Button, Spinner} from "react-bootstrap";
+import cross from "../../cross_black.png";
 
 class Token extends Component {
     constructor(props) {
@@ -56,10 +57,14 @@ class Token extends Component {
                 </div>
                 <hr/>
                 <h3 className="m-3">Images</h3>
-                <div className="m-3">
-                    <img width="50%"
-                        src="https://manager.groupe-bdl.com/web_content/modeles/114-modele-maison-individuelle-a-etage-1.jpg"
-                        alt=""/>
+                <div className="images d-flex">
+                    {
+                        this.state.token._images.length > 0 && this.state.token._images.map((image, key) => {
+                            return <div className="tokenImage" key={key}>
+                                <img src={image} alt="" className="image"/>
+                            </div>
+                        })
+                    }
                 </div>
             </div> : <Spinner animation="grow" variant="black"/>
         )
