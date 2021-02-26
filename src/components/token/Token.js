@@ -57,7 +57,7 @@ class Token extends Component {
                 </div>
                 <hr/>
                 <h3 className="m-3">Images</h3>
-                <div className="images d-flex">
+                <div className="images d-flex flex-wrap">
                     {
                         this.state.token._images.length > 0 && this.state.token._images.map((image, key) => {
                             return <div className="tokenImage" key={key}>
